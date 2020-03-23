@@ -12,11 +12,11 @@ const pool = new Pool({
 async function sendQuery (queryString) {
 	let code;
 	let data;
-    try {
-        const results = await pool.query(queryString);
+	try {
+		const results = await pool.query(queryString);
 		code = 200;
 		data = results.rows;
-    } catch (e) {
+	} catch (e) {
 		code = 400;
 		data = e;
 	}
@@ -40,12 +40,12 @@ function getAllTodo () {
 
 function getTodoByCreator (creator) {
 	const getByCreator = `SELECT * FROM todo WHERE creator = '${creator}'`;
-    return sendQuery(getByCreator);
+	return sendQuery(getByCreator);
 }
 
 function getTodoByID (todoID) {
 	const getById = `SELECT * FROM todo WHERE ID = ${todoID}`;
-    return sendQuery(getById);
+	return sendQuery(getById);
 }
 
 //****************************************************/
@@ -54,7 +54,7 @@ function getTodoByID (todoID) {
 
 function insertTodo (title, content, creator) {
 	const insertQuery = `INSERT INTO todo (title, content, creator, completed, isShared) VALUES ('${title}', '${content}', '${creator}', false, false) RETURNING *`;
-    return sendQuery(insertQuery);
+	return sendQuery(insertQuery);
 }
 
 //****************************************************/
@@ -63,16 +63,16 @@ function insertTodo (title, content, creator) {
 
 function putTodoByID (todoID, title, content, creator, completed, isShared) {
 	const putQuery = `UPDATE todo SET title = '${title}', content = '${content}', creator = '${creator}', completed = ${completed}, isShared = ${isShared} WHERE ID = ${todoID} RETURNING *`;
-    return sendQuery(putQuery);
+	return sendQuery(putQuery);
 }
 
 function patchTodoByID (todoID, patchParams) {
 	var queryParameters = '';
 	for (let [key, value] of patchParams) {
-        queryParameters += `${key} = '${value}', `;
-    }
-    queryParameters = queryParameters.slice(0, -2)
-    const patchQuery = `UPDATE todo SET ${queryParameters} WHERE ID = ${todoID} RETURNING *`;
+		queryParameters += `${key} = '${value}', `;
+	}
+	queryParameters = queryParameters.slice(0, -2)
+	const patchQuery = `UPDATE todo SET ${queryParameters} WHERE ID = ${todoID} RETURNING *`;
 	return sendQuery(patchQuery);
 }
 
