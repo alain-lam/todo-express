@@ -1,48 +1,67 @@
 const Pool = require('pg').Pool;
+const config = require('./db-config');
 
 const pool = new Pool({
-	host: process.env.DB_HOST,
-	port: process.env.DB_PORT,
-	database: process.env.DB_DATABASE,
-	user: process.env.DB_USER,
-	password: process.env.DB_PASSWORD
+	host: config.DB_HOST,
+	port: config.DB_PORT,
+	database: config.DB_DATABASE,
+	user: config.DB_USER,
+	password: config.DB_PASSWORD
 });
 
-// Send a querry and return element of the response
+
+/**
+ * Send a custom query to the database.
+ *
+ * @param {String} queryString - Query string for PostgresSQL
+ * @return {Object} Contains query status, and the query data
+ */
 async function sendQuery (queryString) {
-	let code;
+	let status;
 	let data;
 	try {
 		const results = await pool.query(queryString);
-		code = 200;
+		status = 'sucess';
 		data = results.rows;
 	} catch (e) {
-		code = 400;
+		status = 'error';
 		data = e;
 	}
 	
-	return { code: code, data: data };
+	return { status: status, data: data };
 };
-
-//******************************************************/
-//  Query section                                       /
-//******************************************************/
  
 //****************************************************/
 //  GET subsection                                    /
 //****************************************************/
- 
+
+/**
+ * Get all todo
+ *
+ * @return {Object} status, data
+ */
 function getAllTodo () {
-	console.log(process.env.DB_DATABASE);
 	const getAll = `SELECT * FROM todo`;
 	return sendQuery(getAll);
 }
 
+/**
+ * Get a todo by creator
+ *
+ * @param {String} creator - Email of the creator
+ * @return {Object} status, data
+ */
 function getTodoByCreator (creator) {
 	const getByCreator = `SELECT * FROM todo WHERE creator = '${creator}'`;
 	return sendQuery(getByCreator);
 }
 
+/**
+ * Get a todo by ID
+ *
+ * @param {String} todoID - ID of the Todo to retrieve
+ * @return {Object} status, data
+ */
 function getTodoByID (todoID) {
 	const getById = `SELECT * FROM todo WHERE ID = ${todoID}`;
 	return sendQuery(getById);
@@ -52,6 +71,14 @@ function getTodoByID (todoID) {
 //  Insert subsection                                 /
 //****************************************************/
 
+/**
+ * Insert a new todo
+ *
+ * @param {String} title - Title of the Todo
+ * @param {String} content - Content of the Todo
+ * @param {String} creator - Creator of the Todo
+ * @return {Object} status, data
+ */
 function insertTodo (title, content, creator) {
 	const insertQuery = `INSERT INTO todo (title, content, creator, completed, isShared) VALUES ('${title}', '${content}', '${creator}', false, false) RETURNING *`;
 	return sendQuery(insertQuery);

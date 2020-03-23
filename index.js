@@ -1,23 +1,8 @@
-const dotenv = require('dotenv');
-dotenv.config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const todo = require('./todo');
+const server = require('./server/index');
 
-const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
-app.use(
-	bodyParser.urlencoded({
-		extended: true,
-	})
-);
-
-// Routes
-app.use('/todo', todo);
-
-app.listen(port, () => {
+server.listen(port, () => {
 	console.log("Todo app listening at " + port);
 });
 
@@ -26,3 +11,6 @@ app.listen(port, () => {
 
 // Project structure based on:
 // https://wiki.workassis.com/nodejs-express-separate-routes/
+
+// Test and project structure on:
+// https://dev.to/nedsoft/testing-nodejs-express-api-with-jest-and-supertest-1km6
