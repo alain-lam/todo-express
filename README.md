@@ -5,7 +5,7 @@ npm install
 
 # Database configuration file
 A database must be installed and configured, create a .env config file accordingly.
-PostgresSQL is used in thios project.
+PostgresSQL is used in this project.
 
 # PostgreSQL
 Script to create required table:
