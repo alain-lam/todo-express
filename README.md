@@ -3,9 +3,12 @@
 npm install
 ```
 
+# Database configuration file
+A database must be installed and configured, create a .env config file accordingly.
+PostgresSQL is used in thios project.
+
 # PostgreSQL
-PostgreSQL must be installed and configured, change the db-postgres.js config file accordingly.
-Script to create required table
+Script to create required table:
 ```
 CREATE TABLE todo ( 
     ID SERIAL PRIMARY KEY,
