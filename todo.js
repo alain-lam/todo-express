@@ -3,25 +3,31 @@ const router = express.Router();
 const cors = require('cors');
 const db = require('./db-postgres');
 
+router.use(function timeLog(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
+    next();
+})
 
 //******************************************************/
 //  GET section                                         /
 //******************************************************/
  
 // Get all todos
-router.get('/', cors(), async (req, res) => {
+router.get('/', async (req, res) => {
     const { code, data } = await db.getAllTodo();
     res.status(code).json(data);
 });
 
 // Get all todos by creator
-router.get('/creator/:creator', cors(), async (req, res) => {
+router.get('/creator/:creator', async (req, res) => {
     const { code, data } = await db.getTodoByCreator(req.params.creator);
     res.status(code).json(data);
 });
 
 // Get todo by ID
-router.get('/:id', cors(), async (req, res) => {
+router.get('/:id', async (req, res) => {
     const { code, data } = await db.getTodoByID(req.params.id);
     res.status(code).json(data[0]);
 });
@@ -32,7 +38,7 @@ router.get('/:id', cors(), async (req, res) => {
 //******************************************************/
 
 // Insert a new Todo
-router.post('/', cors(), async (req, res) => {
+router.post('/', async (req, res) => {
     const { title, content, creator } = req.body;
     const { code, data } = await db.insertTodo(title, content, creator);
     res.status(code).json(data[0]);
@@ -44,7 +50,8 @@ router.post('/', cors(), async (req, res) => {
 //******************************************************/
 
 // Update completely a todo by ID
-router.put('/:id', cors(), async (req, res) => {
+router.put('/:id', async (req, res) => {
+    console.log('put')
     const { title, content, creator, completed, isShared } = req.body;
     const { code, data } = await db.putTodoByID(req.params.id, title, content, creator, completed, isShared);
     res.status(code).json(data[0]);
@@ -56,7 +63,7 @@ router.put('/:id', cors(), async (req, res) => {
 //******************************************************/
 
 // Update partially a todo by ID
-router.patch('/:id', cors(), async (req, res) => {
+router.patch('/:id', async (req, res) => {
     const { code, data } = await db.patchTodoByID(req.params.id, Object.entries(req.body));
     res.status(code).json(data[0]);
 });
@@ -66,7 +73,7 @@ router.patch('/:id', cors(), async (req, res) => {
 //******************************************************/
 
 // Delete a todo by ID
-router.delete('/:id', cors(), async (req, res) => {
+router.delete('/:id', async (req, res) => {
     const { code, data } = await db.deleteTodoByID(req.params.id);
     res.status(code).json(data[0]);
 });
