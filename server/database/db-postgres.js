@@ -36,7 +36,7 @@ async function sendQuery (queryString) {
 //****************************************************/
 
 /**
- * Get all todo
+ * Get all Todos
  *
  * @return {Object} status, data
  */
@@ -46,7 +46,7 @@ function getAllTodo () {
 }
 
 /**
- * Get a todo by creator
+ * Get a Todo by creator
  *
  * @param {String} creator - Email of the creator
  * @return {Object} status, data
@@ -57,7 +57,7 @@ function getTodoByCreator (creator) {
 }
 
 /**
- * Get a todo by ID
+ * Get a Todo by ID
  *
  * @param {String} todoID - ID of the Todo to retrieve
  * @return {Object} status, data
@@ -72,7 +72,7 @@ function getTodoByID (todoID) {
 //****************************************************/
 
 /**
- * Insert a new todo
+ * Insert a new Todo
  *
  * @param {String} title - Title of the Todo
  * @param {String} content - Content of the Todo
@@ -88,11 +88,30 @@ function insertTodo (title, content, creator) {
 //  Update subsection                                 /
 //****************************************************/
 
+/**
+ * Completely update a Todo by ID
+ *
+ * @param {String} todoID - ID of the Todo to update
+ * @param {String} title - Title of the Todo
+ * @param {String} content - Content of the Todo
+ * @param {String} creator - Creator of the Todo
+ * @param {String} completed - Completed status of the Todo
+ * @param {String} isShared - Sharing status of the Todo
+ * @return {Object} status, data
+ */
 function putTodoByID (todoID, title, content, creator, completed, isShared) {
 	const putQuery = `UPDATE todo SET title = '${title}', content = '${content}', creator = '${creator}', completed = ${completed}, isShared = ${isShared} WHERE ID = ${todoID} RETURNING *`;
 	return sendQuery(putQuery);
 }
 
+
+/**
+ * Partially update a Todo by ID
+ *
+ * @param {String} todoID - ID of the Todo to update
+ * @param {Array} patchParams - List of key values containing table attributes to modify
+ * @return {Object} status, data
+ */
 function patchTodoByID (todoID, patchParams) {
 	var queryParameters = '';
 	for (let [key, value] of patchParams) {
@@ -107,6 +126,12 @@ function patchTodoByID (todoID, patchParams) {
 //  Delete subsection                                 /
 //****************************************************/
 
+/**
+ * Delete a Todo by ID
+ *
+ * @param {String} todoID - ID of the Todo to delete
+ * @return {Object} status, data
+ */
 function deleteTodoByID (todoID) {
 	const deleteQuery = `DELETE FROM todo WHERE ID = ${todoID} RETURNING *`;
 	return sendQuery(deleteQuery);
