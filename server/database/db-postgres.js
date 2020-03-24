@@ -1,12 +1,12 @@
 const Pool = require('pg').Pool;
-const config = require('./db-config');
+require('dotenv-flow').config();
 
 const pool = new Pool({
-	host: config.DB_HOST,
-	port: config.DB_PORT,
-	database: config.DB_DATABASE,
-	user: config.DB_USER,
-	password: config.DB_PASSWORD
+	host: process.env.DB_HOST,
+	port: process.env.DB_PORT,
+	database: process.env.DB_DATABASE,
+	user: process.env.DB_USER,
+	password: process.env.DB_PASSWORD
 });
 
 
@@ -20,12 +20,13 @@ async function sendQuery (queryString) {
 	let status;
 	let data;
 	try {
-		const results = await pool.query(queryString);
+		const res = await pool.query(queryString);
+		if (res.rowCount === 0) throw 'Not found';
 		status = 'sucess';
-		data = results.rows;
+		data = res.rows;
 	} catch (e) {
 		status = 'error';
-		data = e;
+		data = [{error: e}];
 	}
 	
 	return { status: status, data: data };
